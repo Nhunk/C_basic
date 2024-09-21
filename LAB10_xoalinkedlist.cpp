@@ -78,12 +78,14 @@ void Xoa1L(node *&L, int x)
         {
             q->next = p->next;
             delete p;
+            printf("Danh sach sau khi xoa %d dau tien: ", x);
+            Xuat(L);
         }
         else
-            printf("Khong tim thay %d can xoa!", x);
+            printf("Khong tim thay %d trong danh sach!", x);
+            return;
     }
-    printf("Danh sach sau khi xoa %d dau tien: ", x);
-    Xuat(L);
+
 }
 void Xoa2L(node *&L, int x)
 {
@@ -98,10 +100,12 @@ void Xoa2L(node *&L, int x)
         L = L->next;
         delete p;
     }
+    bool found = 0;
     while (p != NULL && p->next != NULL)
     {
         if (p->next->data == x)
         {
+            found = 1;
             q = p->next;
             p->next = p->next->next;
             delete q;
@@ -109,6 +113,8 @@ void Xoa2L(node *&L, int x)
         else
             p = p->next;
     }
+    if(found){
     printf("\nDanh sach sau khi xoa ta ca %d: ", x);
     Xuat(L);
+    }
 }
