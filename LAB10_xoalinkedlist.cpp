@@ -13,7 +13,7 @@ int main()
 {
     node *L = NULL;
     int x;
-    Nhap(L, 5);
+    Nhap(L, 1);
     printf("\nNhap gia tri can xoa: ");
     scanf("%d", &x);
     Xoa1L(L, x);
@@ -21,6 +21,11 @@ int main()
 }
 void Xuat(node *L)
 {
+    if (L == NULL)
+    {
+        printf("Danh sach rong!\n");
+        return;
+    }
     for (node *q = L; q != NULL; q = q->next)
         printf("%5d", q->data);
 }
@@ -49,11 +54,6 @@ void Nhap(node *&L, int n)
 void Xoa1L(node *&L, int x)
 {
     node *p, *q;
-    if (L == NULL)
-    {
-        printf("Danh sach rong!");
-        return;
-    }
     // Phần tử cần xóa ở đầu danh sách
     if (L->data == x)
     {
@@ -90,16 +90,13 @@ void Xoa1L(node *&L, int x)
 void Xoa2L(node *&L, int x)
 {
     node *p = L, *q;
-    if (L == NULL)
-    {
-        printf("\nDanh sach rong !");
-        return;
-    }
     while (L != NULL && L->data == x)
     {
+        node *t =L;
         L = L->next;
-        delete p;
+        delete t;
     }
+    p = L;//Đặt lại con trỏ về đầu danh sách sau khi thực hiện xóa phần tử tìm được ở đầu
     bool found = 0;
     while (p != NULL && p->next != NULL)
     {
@@ -114,7 +111,7 @@ void Xoa2L(node *&L, int x)
             p = p->next;
     }
     if(found){
-    printf("\nDanh sach sau khi xoa ta ca %d: ", x);
-    Xuat(L);
+        printf("\nDanh sach sau khi xoa ta ca %d: ", x);
+        Xuat(L);
     }
 }
