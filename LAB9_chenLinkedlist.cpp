@@ -5,16 +5,20 @@ struct node
     int data;
     node *next;
 };
+
 void Xuat(node *L);
 void Nhap(node *&L, int n);
 void Chen1L(node *&L, int &x, int &k);
 void Chen2L(node *&L, int x);
+
 int main()
 {
     node *L = NULL;
     int x, k;
     Nhap(L, 5);
+    // Câu 1: Chèn một số x vào vị trí k trong LINKEDLIST
     Chen1L(L, x, k);
+    // Câu 2: Chèn số x vào LINKEDLIST theo thứ tự tăng dần
     printf("\nNhap so can chen vao danh sach theo thu tu tang dan: ");
     scanf("%d", &x);
     Chen2L(L, x);
@@ -102,9 +106,7 @@ void Chen2L(node *&L, int x)
     }
     node *q = L;
     while (q->next != NULL && q->next->data < x)
-    {
         q = q->next;
-    }
     p->next = q->next;
     q->next = p;
     printf("SDanh sach sau chen 2: ");
