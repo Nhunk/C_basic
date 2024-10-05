@@ -6,7 +6,7 @@ void TTHT(char TT[], char HT[]);
 int THT(char HT[]);
 int main()
 {
-    char TT[] = "((2+4)*7)/3-6*9", HT[100];
+    char TT[] = "a*((b+3)+5)*(4-7)+b-9", HT[100];
     TTHT(TT, HT);
     int KQ = THT(HT);
     printf("Ket qua cua bieu thuc o dang hau to la: %d", KQ);
@@ -62,38 +62,38 @@ void TTHT(char TT[], char HT[])
     HT[n] = '\0';
     puts(HT);
 }
-int THT(char HT[])
-{
-    stack<int> s;
-    for (int i = 0; HT[i] != '\0'; i++)
-    {
-        char ch = HT[i];
-        if (isdigit(ch))
-        {
-            s.push(ch - '0');
-        }
-        else
-        {
-            int k2 = s.top();
-            s.pop();
-            int k1 = s.top();
-            s.pop();
-            switch (ch)
-            {
-            case '+':
-                s.push(k1 + k2);
-                break;
-            case '-':
-                s.push(k1 - k2);
-                break;
-            case '*':
-                s.push(k1 * k2);
-                break;
-            case '/':
-                s.push(k1 / k2);
-                break;
-            }
-        }
-    }
-    return s.top();
-}
+// int THT(char HT[])
+// {
+//     stack<int> s;
+//     for (int i = 0; HT[i] != '\0'; i++)
+//     {
+//         char ch = HT[i];
+//         if (isdigit(ch))
+//         {
+//             s.push(ch - '0');
+//         }
+//         else
+//         {
+//             int k2 = s.top();
+//             s.pop();
+//             int k1 = s.top();
+//             s.pop();
+//             switch (ch)
+//             {
+//             case '+':
+//                 s.push(k1 + k2);
+//                 break;
+//             case '-':
+//                 s.push(k1 - k2);
+//                 break;
+//             case '*':
+//                 s.push(k1 * k2);
+//                 break;
+//             case '/':
+//                 s.push(k1 / k2);
+//                 break;
+//             }
+//         }
+//     }
+//     return s.top();
+// }
