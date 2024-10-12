@@ -1,16 +1,31 @@
 #include <stdio.h>
 #include <stack>
-#include <cctype>
 using namespace std;
+
+struct node
+{
+    char data;
+    node *left, *right;
+};
+
 void TTHT(char TT[], char HT[]);
-int THT(char HT[]);
+node *TaoNode(char a);
+node *BSTHT(char a[], int n);
+void LRN(node *T);
+
 int main()
 {
-    char TT[] = "a*((b+3)+5)*(4-7)+b-9", HT[100];
+    char TT[] = "(1+2)/3-((4-5)*6)", HT[100];
+
+    // Đổi biểu thức từ trung tố sang hậu tố
     TTHT(TT, HT);
-    int KQ = THT(HT);
-    printf("Ket qua cua bieu thuc o dang hau to la: %d", KQ);
-    return 0;
+
+    // Tạo cây nhị phân từ biểu thức hậu tố
+    node *T = BSTHT(HT, 11);
+
+    // Duyệt hậu tự cây nhị phân vừa tạo
+    printf("Duyet hau tu cay: ");
+    LRN(T);
 }
 void TTHT(char TT[], char HT[])
 {
@@ -60,40 +75,44 @@ void TTHT(char TT[], char HT[])
         s.pop();
     }
     HT[n] = '\0';
+    printf("Bieu thuc doi sang hau to: ");
     puts(HT);
 }
-int THT(char HT[])
+node *TaoNode(char a)
 {
-    stack<int> s;
-    for (int i = 0; HT[i] != '\0'; i++)
+    node *p = new node;
+    p->data = a;
+    p->left = NULL;
+    p->right = NULL;
+    return p;
+}
+node *BSTHT(char a[], int n)
+{
+    stack<node *> s;
+    for (int i = 0; i < n; i++)
     {
-        char ch = HT[i];
-        if (isdigit(ch))
+        if (a[i] >= '0' && a[i] <= '9')
         {
-            s.push(ch - '0');
+            s.push(TaoNode(a[i]));
         }
         else
         {
-            int k2 = s.top();
+            node *p = TaoNode(a[i]);
+            p->right = s.top();
             s.pop();
-            int k1 = s.top();
+            p->left = s.top();
             s.pop();
-            switch (ch)
-            {
-            case '+':
-                s.push(k1 + k2);
-                break;
-            case '-':
-                s.push(k1 - k2);
-                break;
-            case '*':
-                s.push(k1 * k2);
-                break;
-            case '/':
-                s.push(k1 / k2);
-                break;
-            }
+            s.push(p);
         }
     }
     return s.top();
+}
+void LRN(node *T)
+{
+    if (T != NULL)
+    {
+        LRN(T->left);
+        LRN(T->right);
+        printf("%3c", T->data);
+    }
 }

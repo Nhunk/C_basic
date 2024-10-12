@@ -17,6 +17,7 @@ int main()
 {
     int n = 11, a[n] = {44, 18, 88, 13, 37, 59, 108, 15, 23, 55, 71};
     node *T = NULL;
+    int x = 7;
 
     // Tạo cây nhị phân từ dãy số
     TaoBST(a, n, T);
@@ -24,9 +25,14 @@ int main()
     LNR(T);
 
     // Xóa node có giá trị 37
-    T = XoaNode(T, 37);
+    XoaNode(T, x);
     printf("\nCay sau khi xoa: \n");
-    LNR(T);
+    if(T==NULL){
+        printf("Khong tim thay %d", x);
+    }
+    else{
+        LNR(T);
+    }
     return 0;
 }
 node *TaoNode(int a)
@@ -71,13 +77,13 @@ node *TimMin(node *T)
 node *XoaNode(node *T, int x)
 {
     if (T == NULL)
-        return T;
+        return NULL;
     if (x < T->data)
         T->left = XoaNode(T->left, x);
     else if (x > T->data)
         T->right = XoaNode(T->right, x);
-    else // Đã tìm thấy: x=T->data
-    { 
+    else
+    {
         // Trường hợp node cần xóa là node lá hoặc node có 1 con
         node *p = new node;
         if (T->left == NULL)
@@ -89,6 +95,7 @@ node *XoaNode(node *T, int x)
         else if (T->right == NULL)
         {
             p = T->left;
+
             delete T;
             return p;
         }
@@ -98,4 +105,5 @@ node *XoaNode(node *T, int x)
         T->right = XoaNode(T->right, p->data);
     }
     return T;
+    
 }
