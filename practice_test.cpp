@@ -12,18 +12,20 @@ void TaoBST(int a[], int n, node *&T);
 void LRN(node *T);
 int DEM(node *T);
 node *XoaLa(node *&T);
+int ChieuCao(node *T);
 int main()
 {
     int n = 9, a[n] = {6, 2, 4, 9, 8, 1, 3, 7, 10};
     node *T = NULL;
     TaoBST(a, n, T);
     LRN(T);
-    printf("\nDem so node con: %5d\n", DEM(T));
+    printf("\nChieu cao cua BST la : %d", ChieuCao(T));
+    // printf("\nDem so node con: %5d\n", DEM(T));
     
-    T = XoaLa(T);
-    printf("Cay sau khi xoa node la: ");
-    LRN(T);
-    return 0;
+    // T = XoaLa(T);
+    // printf("Cay sau khi xoa node la: ");
+    // LRN(T);
+    // return 0;
 }
 
 node *TaoNode(int ai)
@@ -91,4 +93,14 @@ node *XoaLa(node *&T)
         return NULL;
     }
     return T;
+}
+int ChieuCao(node *T) {
+    if (T == NULL) {
+        return 0; 
+    } else {
+        int chieuCaoTrai = ChieuCao(T->left);
+        int chieuCaoPhai = ChieuCao(T->right);
+
+        return (chieuCaoTrai > chieuCaoPhai) ? (chieuCaoTrai + 1) : (chieuCaoPhai + 1);
+    }
 }
