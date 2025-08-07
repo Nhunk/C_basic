@@ -67,13 +67,13 @@ int main() {
             if (grid[currentRow][currentCol] != 0) {
                 hitCount++; // Tăng số lần đập nếu gặp gương
 
-                if (grid[currentRow][currentCol] == 1) {
+                if (grid[currentRow][currentCol] == 1) {//gương hướng 1 thì quay sang phải 90 độ
                     int temp_dr = dr; // Lưu giá trị dr hiện tại để tính dc mới
                     dr = -dc;
                     dc = -temp_dr;
                 }
 
-                else if (grid[currentRow][currentCol] == 2) {
+                else if (grid[currentRow][currentCol] == 2) {//gương hướng 2 thì quay trái 90 độ
                     int temp_dr = dr; // Lưu giá trị dr hiện tại để tính dc mới
                     dr = dc;
                     dc = temp_dr;
