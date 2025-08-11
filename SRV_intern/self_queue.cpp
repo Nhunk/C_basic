@@ -1,0 +1,46 @@
+#include <iostream>
+using namespace std;
+
+const int MAX = 500;
+struct Queue {
+    int arr[MAX];
+    int front, rear;
+
+    Queue(): front(-1),  rear(-1) {}
+    
+    void enqueue(int x) {
+      rear = (rear + 1) % MAX ;
+      arr[++rear] = x;
+    }
+
+    int dequeue() {
+      if (isEmpty()) 
+        return -1;
+      front = (front + 1)%MAX;
+      return arr[++front];
+    }
+    
+    int Qpeek(){
+      if (isEmpty()) 
+        return -1;
+      return arr[front + 1];
+    }
+
+    bool isEmpty() {
+        return front == rear;
+    }
+    
+    bool isFull(){
+      return (rear + 1) % MAX == front;
+    }
+    
+    void reset(){
+      front = -1;
+      rear = -1;
+    }
+};
+
+int main() 
+{
+    return 0;
+}
