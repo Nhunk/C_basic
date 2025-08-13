@@ -1,240 +1,132 @@
-/*
-﻿ There can be more than one test case in the input. The first line has T, the number of test cases.
-Then the totally T test cases are provided in the following lines (T<=10).
-The first line of each test case contains two integers M and N (2 <= M, N< = 300). Each of the following M lines contains N uppercase letters, each of which is one of 'Y' (you), 'T' (target), 'S' (steel wall), 'B' (brick wall), 'R' (river) and 'E' (empty space). Both 'Y' and 'T' appear only once. 
-Output
-For each test case, please output the turns you take at least in a separate line. If you can't arrive at the target, output "-1" instead.
-*/
-
 #include <iostream>
 using namespace std;
 
-const int MAX = 301;
-struct Point {
-    int x, y;
-    Point(): x(-1), y(-1){}//Constructor
-    Point(int i, int j): x(i), y(j){}
-};
-
-struct Queue {
-    Point arr[MAX*MAX];
-    int front, rear;
-
-    Queue(): front(-1),  rear(-1) {}
-    
-    void enqueue(Point value) {
-      rear = (rear + 1) % MAX ;
-      arr[rear] = value;
-    }
-
-    Point dequeue() {
-      if (isEmpty()) 
-        return Point(-1, -1);
-      front = (front + 1) % MAX;
-      return arr[front];
-    }
-    
-    Point Qpeek(){
-      if (isEmpty()) 
-        return Point(-1, -1);
-      return arr[front + 1];
-    }
-
-    bool isEmpty() {
-        return front == rear;
-    }
-    
-    bool isFull(){
-      return (rear + 1) % MAX == front;
-    }
-    
-    void reset(){
-      front = -1;
-      rear = -1;
-    }
-};
+const int MAX = 20;
 
 int M, N;
-int sx, sy, tx, ty;
-int dx[4] = {1, -1, 0, 0};   // hướng đi
-int dy[4] = {0, 0, 1, -1};
-char map[MAX][MAX];
-int count[MAX][MAX];
+char maze[MAX][MAX];
+bool visited[MAX][MAX];
+int dx[4] = {-1, 1, 0, 0};
+int dy[4] = {0, 0, -1, 1};
 
-Queue queue;
+struct Pos {
+    int x, y;
+};
 
-void input(){
-    cin >> M >> N;
-    for(int i=0; i<M; i++) {
-        for(int j=0; j<N; j++) {
-            cin >> map[i][j];
-            if(map[i][j]=='Y') { sx=i; sy=j; }
-            if(map[i][j]=='T') { tx=i; ty=j; }
-        }
+struct Stack {
+    Pos arr[MAX * MAX];
+    int top;
+    Stack() { top = -1; }
+    void push(Pos p) { if (top < MAX * MAX - 1) arr[++top] = p; }
+    Pos pop() { 
+        if (top >= 0) 
+            return arr[top--]; 
+        else 
+            return Pos{-1, -1}; 
     }
-}
+    bool empty() { return top == -1; }
+};
 
+// Hàm DFS để tìm đường đi
+bool dfs(Pos start, Pos end) {
+    // Đánh dấu tất cả các ô chưa được thăm
+    for (int i = 0; i < M; i++)
+        for (int j = 0; j < N; j++)
+            visited[i][j] = false;
 
-int bfs() {
-    int nx, ny;
-    Point cur;
-    for(int i = 0; i < M; i++)
-        for(int j = 0; j < N; j++)
-            count[i][j] = -1;
+    Stack s;
+    s.push(start);
+    visited[start.x][start.y] = true;
 
-    queue.reset();
-    queue.enqueue(Point(sx, sy));
-    count[sx][sy] = 0;
+    while (!s.empty()) {
+        Pos cur = s.pop();
+        if (cur.x == end.x && cur.y == end.y) return true;
 
-    while(!queue.isEmpty()) {
-        cur = queue.dequeue();
-
-        if(cur.x == tx && cur.y == ty)
-            return count[cur.x][cur.y];
-
-        for(int i = 0; i < 4; i++) {
-            nx = cur.x + dx[i];
-            ny = cur.y + dy[i];
-
-            if(nx < 0 || nx >= M || ny < 0 || ny >= N)
-                continue;
-
-            if(map[nx][ny] == 'S' || map[nx][ny] == 'R')
-                continue;
-
-            int step = count[cur.x][cur.y] + (map[nx][ny] == 'B' ? 2 : 1);
-
-            if(count[nx][ny] == -1 || step < count[nx][ny]) {
-                count[nx][ny] = step;
-                queue.enqueue(Point(nx, ny));
+        // Kiểm tra 4 hướng đi
+        for (int k = 0; k < 4; k++) {
+            int nx = cur.x + dx[k];
+            int ny = cur.y + dy[k];
+            if (nx >= 0 && nx < M && ny >= 0 && ny < N &&
+                !visited[nx][ny] && maze[nx][ny] == '.') {
+                visited[nx][ny] = true;
+                s.push(Pos{nx, ny});
             }
         }
     }
-    return -1;
+    return false;
 }
+
+// Hàm kiểm tra tính hợp lệ của mê cung
+bool validateMaze() {
+    Pos openings[80];
+    int openCount = 0;
+
+    // Quét biên để tìm cửa vào ra
+    for (int i = 0; i < M; i++) {
+        if (maze[i][0] == '.') {
+            openings[openCount].x = i;
+            openings[openCount].y = 0;
+            openCount++;
+        }
+        if (N > 1 && maze[i][N - 1] == '.') {
+            openings[openCount].x = i;
+            openings[openCount].y = N - 1;
+            openCount++;
+        }
+    }
+    for (int j = 0; j < N; j++) {
+        if (maze[0][j] == '.') {
+            openings[openCount].x = 0;
+            openings[openCount].y = j;
+            openCount++;
+        }
+        if (M > 1 && maze[M - 1][j] == '.') {
+            openings[openCount].x = M - 1;
+            openings[openCount].y = j;
+            openCount++;
+        }
+    }
+
+    // Loại bỏ các cửa trùng nhau (góc bị đếm hai lần)
+    Pos uniqueOpen[80];
+    int uniqueCount = 0;
+    for (int i = 0; i < openCount; i++) {
+        bool found = false;
+        for (int j = 0; j < uniqueCount; j++) {
+            if (openings[i].x == uniqueOpen[j].x && openings[i].y == uniqueOpen[j].y) {
+                found = true;
+                break;
+            }
+        }
+        if (!found) {
+            uniqueOpen[uniqueCount].x = openings[i].x;
+            uniqueOpen[uniqueCount].y = openings[i].y;
+            uniqueCount++;
+        }
+    }
+
+    // Kiểm tra có đúng 2 cửa vào ra không
+    if (uniqueCount != 2) return false;
+
+    // Thực hiện DFS giữa hai cửa
+    return dfs(uniqueOpen[0], uniqueOpen[1]);
+}
+
 int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
     int T;
     cin >> T;
-    for(int testcase=1; testcase<=T;testcase++) {
-        input();
-        cout <<"Case #"<<testcase<<endl<< bfs() << endl;
+    while (T--) {
+        cin >> M >> N;
+        for (int i = 0; i < M; i++) {
+            for (int j = 0; j < N; j++) {
+                cin >> maze[i][j];
+            }
+        }
+        if (validateMaze()) cout << "valid\n";
+        else cout << "invalid\n";
     }
     return 0;
 }
-
-
-// #include <iostream>
-// using namespace std;
-
-// const int MAX = 301;
-// struct Point {
-//     int x, y;
-//     Point(): x(-1), y(-1){}//Constructor
-//     Point(int i, int j): x(i), y(j){}
-// };
-
-// struct Queue {
-//     Point arr[MAX];
-//     int front, rear;
-
-//     Queue(): front(-1),  rear(-1) {}
-    
-//     void enqueue(Point value) {
-//       rear = (rear + 1) % MAX ;
-//       arr[rear] = value;
-//     }
-
-//     Point dequeue() {
-//       if (isEmpty()) 
-//         return Point(-1, -1);
-//       front = (front + 1) % MAX;
-//       return arr[front];
-//     }
-    
-//     Point Qpeek(){
-//       if (isEmpty()) 
-//         return Point(-1, -1);
-//       return arr[front + 1];
-//     }
-
-//     bool isEmpty() {
-//         return front == rear;
-//     }
-    
-//     bool isFull(){
-//       return (rear + 1) % MAX == front;
-//     }
-    
-//     void reset(){
-//       front = -1;
-//       rear = -1;
-//     }
-// };
-
-// int M, N;
-// int sx, sy, tx, ty;
-// int dx[4] = {1, -1, 0, 0};   // hướng đi
-// int dy[4] = {0, 0, 1, -1};
-// char map[MAX][MAX];
-// int count[MAX][MAX];
-
-// Queue queue;
-
-// void input(){
-//     cin >> M >> N;
-//     for(int i=0; i<M; i++) {
-//         for(int j=0; j<N; j++) {
-//             cin >> map[i][j];
-//             if(map[i][j]=='Y') { sx=i; sy=j; }
-//             if(map[i][j]=='T') { tx=i; ty=j; }
-//         }
-//     }
-// }
-
-
-// int bfs() {
-//     int nx, ny;
-//     Point cur;
-//     for(int i = 0; i < M; i++)
-//         for(int j = 0; j < N; j++)
-//             count[i][j] = -1;
-
-//     queue.reset();
-//     queue.enqueue(Point(sx, sy));
-//     count[sx][sy] = 0;
-
-//     while(!queue.isEmpty()) {
-//         cur = queue.dequeue();
-
-//         if(cur.x == tx && cur.y == ty)
-//             return count[cur.x][cur.y];
-
-//         for(int i = 0; i < 4; i++) {
-//             nx = cur.x + dx[i];
-//             ny = cur.y + dy[i];
-
-//             if(nx < 0 || nx >= M || ny < 0 || ny >= N)
-//                 continue;
-
-//             if(map[nx][ny] == 'S' || map[nx][ny] == 'R')
-//                 continue;
-
-//             int step = count[cur.x][cur.y] + (map[nx][ny] == 'B' ? 2 : 1);
-
-//             if(count[nx][ny] == -1 || step < count[nx][ny]) {
-//                 count[nx][ny] = step;
-//                 queue.enqueue(Point(nx, ny));
-//             }
-//         }
-//     }
-//     return -1;
-// }
-// int main() {
-//     int T;
-//     cin >> T;
-//     for(int testcase=1; testcase<=T;testcase++) {
-//         input();
-//         cout <<"Case #"<<testcase<<endl<< bfs() << endl;
-//     }
-//     return 0;
-// }
