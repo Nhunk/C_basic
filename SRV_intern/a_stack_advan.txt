@@ -1,0 +1,61 @@
+#include <iostream>
+using namespace std;
+
+const int MAX = 1005;
+
+struct Point {
+    int x, y;
+    Point(): x(-1), y(-1) {}
+    Point(int i, int j): x(i), y(j) {}
+};
+
+struct Stack {
+    Point arr[MAX];
+    int top;
+
+    Stack(): top(-1) {}
+
+    void push(Point value) {
+        if (top < MAX - 1)
+            arr[++top] = value;
+    }
+
+    Point pop() {
+        if (isEmpty())
+            return Point(-1, -1);
+        return arr[top--];
+    }
+
+    Point peek() {
+        if (isEmpty())
+            return Point(-1, -1);
+        return arr[top];
+    }
+
+    bool isEmpty() {
+        return top == -1;
+    }
+
+    void reset() {
+        top = -1;
+    }
+};
+
+int main() {
+    Stack st;
+    // ??y các ?i?m vào stack
+    st.push(Point(1, 2));
+    st.push(Point(3, 4));
+    st.push(Point(5, 6));
+
+    // L?y ra các ?i?m
+    while (!st.isEmpty()) {
+        Point p = st.pop();
+        cout << "Pop: (" << p.x << "," << p.y << ")\n";
+    }
+
+    // Th? pop khi stack r?ng
+    Point p = st.pop();
+    cout << "Pop on empty: (" << p.x << "," << p.y << ")\n";
+    return 0;
+}

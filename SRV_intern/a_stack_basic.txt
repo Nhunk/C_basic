@@ -1,0 +1,62 @@
+#include <iostream>
+using namespace std;
+
+const int MAX = 10;
+
+struct Stack {
+    int arr[MAX];
+    int top;
+
+    Stack() : top(-1) {}
+
+    void push(int x) {
+        if (top < MAX - 1)
+            arr[++top] = x;
+    }
+
+    int pop() {
+        if (isEmpty())
+            return -1;
+        return arr[top--];
+    }
+
+    int Speek() {
+        if (isEmpty())
+            return -1;
+        return arr[top];
+    }
+
+    bool isEmpty() {
+        return top == -1;
+    }
+
+    bool isFull() {
+        return top == MAX - 1;
+    }
+
+    void reset() {
+        top = -1;
+    }
+};
+
+int main() {
+    Stack st;
+    
+    // ??y s? vào stack
+    st.push(10);
+    st.push(20);
+    st.push(30);
+
+    // L?y ra các s? t? stack (LIFO)
+    cout << st.pop() << endl; // 30
+    cout << st.pop() << endl; // 20
+    cout << st.Speek() << endl; // 10 (xem ??nh mà không l?y ra)
+    cout << st.pop() << endl; // 10
+    cout << st.pop() << endl; // -1 (r?ng r?i)
+
+    // Ki?m tra r?ng
+    if (st.isEmpty()) cout << "Stack dang rong!\n";
+    else cout << "Stack co phan tu!\n";
+
+    return 0;
+}
